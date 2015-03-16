@@ -1,0 +1,83 @@
+<?php
+
+namespace Onoi\EventDispatcher\Listener;
+
+use Onoi\EventDispatcher\EventListener;
+use Onoi\EventDispatcher\EventContext;
+
+use RuntimeException;
+
+/**
+ * @license GNU GPL v2+
+ * @since 1.0
+ *
+ * @author mwjames
+ */
+class GenericCallbackEventListener implements EventListener {
+
+	/**
+	 * @var array
+	 */
+	protected $callbacks = array();
+
+	/**
+	 * @var boolean
+	 */
+	private $propagationStopState = false;
+
+	/**
+	 * @since 1.0
+	 *
+	 * @param Closure|null $callback
+	 */
+	public function __construct( $callback = null ) {
+		if ( $callback !== null ) {
+			$this->registerCallback( $callback );
+		}
+	}
+
+	/**
+	 * @since 1.0
+	 *
+	 * @param Closure $callback
+	 * @throws RuntimeException
+	 */
+	public function registerCallback( $callback ) {
+
+		if ( !is_callable( $callback ) ) {
+			throw new RuntimeException( "Invoked object is not a valid callback or Closure" );
+		}
+
+		$this->callbacks[] = $callback;
+	}
+
+	/**
+	 * @since 1.0
+	 *
+	 * {@inheritDoc}
+	 */
+	public function execute( EventContext $eventContext = null ) {
+		foreach ( $this->callbacks as $callback ) {
+			call_user_func_array( $callback, array( $eventContext ) );
+		}
+	}
+
+	/**
+	 * @since 1.0
+	 *
+	 * @param boolean $propagationStopState
+	 */
+	public function setPropagationStopState( $propagationStopState ) {
+		$this->propagationStopState = (bool)$propagationStopState;
+	}
+
+	/**
+	 * @since 1.0
+	 *
+	 * {@inheritDoc}
+	 */
+	public function isPropagationStopped() {
+		return $this->propagationStopState;
+	}
+
+}
