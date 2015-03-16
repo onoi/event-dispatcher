@@ -28,7 +28,7 @@ class GenericCallbackEventListener implements EventListener {
 	/**
 	 * @since 1.0
 	 *
-	 * @param Closure|null $callback
+	 * @param Closure|callable|null $callback
 	 */
 	public function __construct( $callback = null ) {
 		if ( $callback !== null ) {
@@ -39,7 +39,7 @@ class GenericCallbackEventListener implements EventListener {
 	/**
 	 * @since 1.0
 	 *
-	 * @param Closure $callback
+	 * @param Closure|callable $callback
 	 * @throws RuntimeException
 	 */
 	public function registerCallback( $callback ) {

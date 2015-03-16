@@ -37,7 +37,7 @@ class GenericCallbackEventListenerTest extends \PHPUnit_Framework_TestCase {
 		$instance->registerCallback( 'foo' );
 	}
 
-	public function testRegisterExecutableCallback() {
+	public function testRegisterClosure() {
 
 		$instance = new GenericCallbackEventListener();
 
@@ -57,7 +57,7 @@ class GenericCallbackEventListenerTest extends \PHPUnit_Framework_TestCase {
 		$instance->execute();
 	}
 
-	public function testRegisterExecutableCallbackViaConstrutor() {
+	public function testRegisterClosureViaConstrutor() {
 
 		$testClass = $this->getMockBuilder( '\stdClass' )
 			->disableOriginalConstructor()
@@ -75,6 +75,23 @@ class GenericCallbackEventListenerTest extends \PHPUnit_Framework_TestCase {
 		$instance->execute();
 	}
 
+	public function testRegisterExecutableCallbackViaConstrutor() {
+
+		$mockTester = $this->getMockBuilder( '\stdClass' )
+			->disableOriginalConstructor()
+			->setMethods( array( 'runTest' ) )
+			->getMock();
+
+		$mockTester->expects( $this->once() )
+			->method( 'runTest' );
+
+		$instance = new GenericCallbackEventListener( array(
+			new FooMockTester( $mockTester ), 'invokedCallback' )
+		);
+
+		$instance->execute();
+	}
+
 	public function testPropagationState() {
 
 		$instance = new GenericCallbackEventListener();
@@ -88,6 +105,20 @@ class GenericCallbackEventListenerTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue(
 			$instance->isPropagationStopped()
 		);
+	}
+
+}
+
+class FooMockTester {
+
+	private $mockTester;
+
+	public function __construct( $mockTester ) {
+		$this->mockTester = $mockTester;
+	}
+
+	public function invokedCallback() {
+		$this->mockTester->runTest();
 	}
 
 }

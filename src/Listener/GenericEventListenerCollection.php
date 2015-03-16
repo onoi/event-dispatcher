@@ -41,7 +41,7 @@ class GenericEventListenerCollection implements EventListenerCollection {
 	 * @since 1.0
 	 *
 	 * @param string $event
-	 * @param Closure $callback
+	 * @param Closure|callable $callback
 	 *
 	 * @throws InvalidArgumentException
 	 * @throws RuntimeException
