@@ -12,7 +12,7 @@ is now being deployed as independent library.
 
 ## Requirements
 
-PHP 5.3 or later
+PHP 5.3/HHVM 3.3 or later
 
 ## Installation
 
@@ -31,77 +31,83 @@ or to execute `composer require onoi/event-dispatcher:~1.0`.
 ## Usage
 
 ```php
-	class CommonListenerRegistery {
+class CommonListenerRegistery {
 
-		private $eventDispatcher;
-		private $eventListenerFactory;
+	private $eventDispatcher;
+	private $eventListenerFactory;
 
-		public function __construct( EventDispatcher $eventDispatcher, EventListenerFactory $eventListenerFactory ) {
-			$this->eventDispatcher = $eventDispatcher;
-			$this->eventListenerFactory = $eventListenerFactory;
-		}
-
-		public function register() {
-
-			$callbackEventListener = $this->eventListenerFactory->newGenericCallbackEventListener();
-
-			$callbackEventListener->registerCallback( function( $eventContext ) {
-				// Do something
-			} );
-
-			$callbackEventListener->setPropagationStopState( true );
-
-			$this->eventDispatcher->addListener( 'do.something', $callbackEventListener );
-		}
+	public function __construct( EventDispatcher $eventDispatcher, EventListenerFactory $eventListenerFactory ) {
+		$this->eventDispatcher = $eventDispatcher;
+		$this->eventListenerFactory = $eventListenerFactory;
 	}
-```
-```php
-	class BarListener implements EventListner {
 
-		public function execute( EventContext $eventContext = null ) {
+	public function register() {
 
-			$eventContext->get( 'usedByBarIfNotified' );
+		$callbackEventListener = $this->eventListenerFactory->newGenericCallbackEventListener();
 
+		$callbackEventListener->registerCallback( function( $eventContext ) {
 			// Do something
-		}
+		} );
 
-		public function isPropagationStopped() {
-			return false;
-		}
+		$callbackEventListener->setPropagationStopState( true );
+
+		$this->eventDispatcher->addListener( 'do.something', $callbackEventListener );
 	}
+}
 ```
 ```php
+class BarListener implements EventListner {
 
-	$eventDispatcherFactory = new EventDispatcherFactory();
-	$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
+	public function execute( EventContext $eventContext = null ) {
 
-	$commonListenerRegistery = new CommonListenerRegistery( $eventDispatcher, new EventListenerFactory() );
-	$commonListenerRegistery->register();
-
-	$eventDispatcher->addListener( 'notify.bar', new BarListener() );
-
-	class Foo {
-
-		public function __construct( EventDispatcher $eventDispatcher ) {
-			$this->eventDispatcher = $eventDispatcher;
-		}
-
-		public function doSomething() {
-			$this->eventDispatcher->dispatch( 'do.something' );
-		}
-
-		public function doNotifyBar() {
-
-			$eventContext = new EventContext();
-			$eventContext->set( 'usedByBarIfNotified', new \stdClass );
-
-			$this->eventDispatcher->dispatch( 'notify.bar', $eventContext );
+		// Do something
+		if ( $eventContext !== null ) {
+			$eventContext->get( 'usedByBarIfNotified' );
 		}
 	}
 
-	$foo = new Foo( $eventDispatcher );
-	$foo->doSomething();
-	$foo->doNotifyBar();
+	public function isPropagationStopped() {
+		return false;
+	}
+}
+```
+```php
+$eventDispatcherFactory = new EventDispatcherFactory();
+$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
+
+// Add common listeners
+$commonListenerRegistery = new CommonListenerRegistery(
+	$eventDispatcher,
+	new EventListenerFactory()
+);
+
+$commonListenerRegistery->register();
+
+// An an independent listener
+$eventDispatcher->addListener( 'notify.bar', new BarListener() );
+
+class Foo {
+
+	public function __construct( EventDispatcher $eventDispatcher ) {
+		$this->eventDispatcher = $eventDispatcher;
+	}
+
+	public function doSomething() {
+		$this->eventDispatcher->dispatch( 'do.something' );
+	}
+
+	public function doNotifyBar() {
+
+		$eventContext = new EventContext();
+		$eventContext->set( 'usedByBarIfNotified', new \stdClass );
+
+		$this->eventDispatcher->dispatch( 'notify.bar', $eventContext );
+	}
+}
+
+$foo = new Foo( $eventDispatcher );
+$foo->doSomething();
+$foo->doNotifyBar();
 ```
 
 ## Contribution and support
@@ -118,7 +124,7 @@ The library provides unit tests that covers the core-functionality normally run 
 
 ### Release notes
 
-* 1.0.0 initial release (2015-01-24)
+* 1.0.0 initial release (2015-03-25)
 
 ## License
 
