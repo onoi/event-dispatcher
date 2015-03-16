@@ -113,6 +113,24 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 			$instance->hasEvent( 'FOO' )
 		);
 	}
+
+	public function testTryRemovalOfListenersForUnknownEvent() {
+
+		$instance = new GenericEventDispatcher();
+
+		$eventListener = $this->getMockBuilder( '\Onoi\EventDispatcher\EventListener' )
+			->disableOriginalConstructor()
+			->getMock();
+
+		$instance->addListener( 'foo', $eventListener );
+
+		$instance->removeListener( 'bar', $eventListener );
+
+		$this->assertTrue(
+			$instance->hasEvent( 'FOO' )
+		);
+	}
+
 	public function testDispatchEvent() {
 
 		$instance = new GenericEventDispatcher();

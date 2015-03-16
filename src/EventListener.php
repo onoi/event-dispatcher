@@ -27,7 +27,7 @@ interface EventListener {
 	 *
 	 * @since 1.0
 	 *
-	 * @return true
+	 * @return boolean
 	 */
 	public function isPropagationStopped();
 

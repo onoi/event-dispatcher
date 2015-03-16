@@ -29,4 +29,22 @@ class NullEventListenerTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public function testExecute() {
+
+		$instance = new NullEventListener();
+
+		$this->assertNull(
+			$instance->execute()
+		);
+	}
+
+	public function testIsPropagationStopped() {
+
+		$instance = new NullEventListener();
+
+		$this->assertFalse(
+			$instance->isPropagationStopped()
+		);
+	}
+
 }

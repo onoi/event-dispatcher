@@ -37,7 +37,7 @@ class GenericCallbackEventListenerTest extends \PHPUnit_Framework_TestCase {
 		$instance->registerCallback( 'foo' );
 	}
 
-	public function testRegisterExecuteCallback() {
+	public function testRegisterExecutableCallback() {
 
 		$instance = new GenericCallbackEventListener();
 
@@ -49,10 +49,29 @@ class GenericCallbackEventListenerTest extends \PHPUnit_Framework_TestCase {
 		$testClass->expects( $this->once() )
 			->method( 'runTest' );
 
-		$instance->registerCallback( function() use( $testClass ) {
+		$callback = function() use( $testClass ) {
 			$testClass->runTest();
-		} );
+		};
 
+		$instance->registerCallback( $callback );
+		$instance->execute();
+	}
+
+	public function testRegisterExecutableCallbackViaConstrutor() {
+
+		$testClass = $this->getMockBuilder( '\stdClass' )
+			->disableOriginalConstructor()
+			->setMethods( array( 'runTest' ) )
+			->getMock();
+
+		$testClass->expects( $this->once() )
+			->method( 'runTest' );
+
+		$callback = function() use( $testClass ) {
+			$testClass->runTest();
+		};
+
+		$instance = new GenericCallbackEventListener( $callback );
 		$instance->execute();
 	}
 
