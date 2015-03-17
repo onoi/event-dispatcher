@@ -17,7 +17,9 @@ class EventContext {
 	/**
 	 * @var array
 	 */
-	private $options = array();
+	private $options = array(
+		'propagationstop' => false
+	);
 
 	/**
 	 * @since 1.0
@@ -46,6 +48,15 @@ class EventContext {
 		}
 
 		throw new InvalidArgumentException(  "{$key} is unknown" );
+	}
+
+	/**
+	 * @since 1.0
+	 *
+	 * @return boolean
+	 */
+	public function isPropagationStopped() {
+		return $this->get( 'propagationstop' );
 	}
 
 }

@@ -109,7 +109,7 @@ class GenericEventDispatcher implements EventDispatcher {
 
 			$listener->execute( $eventContext );
 
-			if ( $listener->isPropagationStopped() ) {
+			if ( $listener->isPropagationStopped() || ( $eventContext !== null && $eventContext->isPropagationStopped() ) ) {
 				break;
 			}
 		}

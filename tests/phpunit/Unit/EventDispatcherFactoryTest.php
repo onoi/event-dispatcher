@@ -16,6 +16,23 @@ use Onoi\EventDispatcher\EventDispatcherFactory;
  */
 class EventDispatcherFactoryTest extends \PHPUnit_Framework_TestCase {
 
+	public function testCanConstruct() {
+
+		$instance = new EventDispatcherFactory();
+
+		$this->assertInstanceOf(
+			'\Onoi\EventDispatcher\EventDispatcherFactory',
+			$instance
+		);
+
+		$this->assertInstanceOf(
+			'\Onoi\EventDispatcher\EventDispatcherFactory',
+			EventDispatcherFactory::getInstance()
+		);
+
+		EventDispatcherFactory::clear();
+	}
+
 	public function testCanConstructEventContext() {
 
 		$instance = new EventDispatcherFactory();
@@ -33,6 +50,36 @@ class EventDispatcherFactoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertInstanceOf(
 			'\Onoi\EventDispatcher\Dispatcher\GenericEventDispatcher',
 			$instance->newGenericEventDispatcher()
+		);
+	}
+
+	public function testCanConstructNullEventListener() {
+
+		$instance = new EventDispatcherFactory();
+
+		$this->assertInstanceOf(
+			'\Onoi\EventDispatcher\Listener\NullEventListener',
+			$instance->newNullEventListener()
+		);
+	}
+
+	public function testCanConstructGenericCallbackEventListener() {
+
+		$instance = new EventDispatcherFactory();
+
+		$this->assertInstanceOf(
+			'\Onoi\EventDispatcher\Listener\GenericCallbackEventListener',
+			$instance->newGenericCallbackEventListener()
+		);
+	}
+
+	public function testCanConstructGenericEventListenerCollection() {
+
+		$instance = new EventDispatcherFactory();
+
+		$this->assertInstanceOf(
+			'\Onoi\EventDispatcher\Listener\GenericEventListenerCollection',
+			$instance->newGenericEventListenerCollection()
 		);
 	}
 

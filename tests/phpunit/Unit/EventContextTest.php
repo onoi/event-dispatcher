@@ -42,6 +42,21 @@ class EventContextTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public function testToAlterPropagationState() {
+
+		$instance = new EventContext();
+
+		$this->assertFalse(
+			$instance->isPropagationStopped()
+		);
+
+		$instance->set( 'proPagationSTOP', true );
+
+		$this->assertTrue(
+			$instance->isPropagationStopped()
+		);
+	}
+
 	public function testUnknownThrowsException() {
 
 		$instance = new EventContext();

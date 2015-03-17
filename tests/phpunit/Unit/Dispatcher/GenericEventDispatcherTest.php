@@ -150,13 +150,17 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 		$instance->dispatch( 'foo' );
 	}
 
-	public function testDispatchEventWithContext() {
+	public function testDispatchEventWithContextToOverrideListenerPropagationStopState() {
 
 		$instance = new GenericEventDispatcher();
 
 		$eventContext = $this->getMockBuilder( '\Onoi\EventDispatcher\EventContext' )
 			->disableOriginalConstructor()
 			->getMock();
+
+		$eventContext->expects( $this->once() )
+			->method( 'isPropagationStopped' )
+			->will( $this->returnValue( true ) );
 
 		$eventListener = $this->getMockBuilder( '\Onoi\EventDispatcher\EventListener' )
 			->disableOriginalConstructor()
@@ -167,7 +171,8 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 			->with( $this->identicalTo( $eventContext ) );
 
 		$eventListener->expects( $this->once() )
-			->method( 'isPropagationStopped' );
+			->method( 'isPropagationStopped' )
+			->will( $this->returnValue( false ) );
 
 		$instance->addListener( 'foo', $eventListener );
 

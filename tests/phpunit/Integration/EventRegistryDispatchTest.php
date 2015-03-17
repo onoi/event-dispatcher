@@ -2,11 +2,11 @@
 
 namespace Onoi\EventDispatcher\Tests\Integration;
 
-use Onoi\EventDispatcher\EventListenerFactory;
 use Onoi\EventDispatcher\EventDispatcherFactory;
 use Onoi\EventDispatcher\EventDispatcher;
 use Onoi\EventDispatcher\EventContext;
 use Onoi\EventDispatcher\EventListener;
+use Onoi\EventDispatcher\EventListenerCollection;
 
 /**
  * @group onoi-event-dispatcher
@@ -18,36 +18,71 @@ use Onoi\EventDispatcher\EventListener;
  */
 class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 
-	private $mockTester;
+	public function testDispatchSomeEventsToCollectionOfListenersWithoutPropagationStop() {
 
-	protected function setUp() {
-		parent::setUp();
-
-		$this->mockTester = $this->getMockBuilder( '\stdClass' )
-			->disableOriginalConstructor()
-			->setMethods( array( 'doSomething' ) )
+		$mockTester = $this->getMockBuilder( '\stdClass' )
+			->setMethods( array( 'doSomething', 'doSomethingElse' ) )
 			->getMock();
 
-		$this->mockTester->expects( $this->once() )
+		$mockTester->expects( $this->once() )
 			->method( 'doSomething' );
-	}
 
-	public function testDispatchSomeEventsToPreInvokedListeners() {
+		$mockTester->expects( $this->once() )
+			->method( 'doSomethingElse' );
 
 		$eventDispatcherFactory = new EventDispatcherFactory();
 		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 
-		$fooRegistery = new FooRegistery( $eventDispatcher, new EventListenerFactory() );
+		$fooRegistery = new FooRegistery(
+			$eventDispatcher,
+			$eventDispatcherFactory->newGenericEventListenerCollection()
+		);
+
 		$fooRegistery->register();
 
 		$eventContext = new EventContext();
-		$eventContext->set( 'mock', $this->mockTester );
+		$eventContext->set( 'mock', $mockTester );
 
 		$eventDispatcher->dispatch( 'do.something', $eventContext );
-		$eventDispatcher->dispatch( 'do.nothing', $eventContext );
 	}
 
-	public function testDispatchSomeEventsToSelfSustainedListener() {
+	public function testDispatchSomeEventsToCollectionOfListenersWithPropagationStop() {
+
+		$mockTester = $this->getMockBuilder( '\stdClass' )
+			->setMethods( array( 'doSomething', 'doSomethingElse' ) )
+			->getMock();
+
+		$mockTester->expects( $this->once() )
+			->method( 'doSomething' );
+
+		$mockTester->expects( $this->never() )
+			->method( 'doSomethingElse' );
+
+		$eventDispatcherFactory = new EventDispatcherFactory();
+		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
+
+		$fooRegistery = new FooRegistery(
+			$eventDispatcher,
+			$eventDispatcherFactory->newGenericEventListenerCollection()
+		);
+
+		$fooRegistery->register();
+
+		$eventContext = new EventContext();
+		$eventContext->set( 'mock', $mockTester );
+		$eventContext->set( 'propagationstop', true );
+
+		$eventDispatcher->dispatch( 'do.something', $eventContext );
+	}
+
+	public function testDispatchSomeEventsToAdHocListener() {
+
+		$mockTester = $this->getMockBuilder( '\stdClass' )
+			->setMethods( array( 'doSomething' ) )
+			->getMock();
+
+		$mockTester->expects( $this->once() )
+			->method( 'doSomething' );
 
 		$eventDispatcherFactory = new EventDispatcherFactory();
 		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
@@ -55,10 +90,10 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 		$eventDispatcher->addListener( 'do.something', new BarListener() );
 
 		$eventContext = new EventContext();
-		$eventContext->set( 'mock',  $this->mockTester );
+		$eventContext->set( 'mock', $mockTester );
 
 		$eventDispatcher->dispatch( 'do.something', $eventContext );
-		$eventDispatcher->dispatch( 'do.nothing', $eventContext );
+		$eventDispatcher->dispatch( 'do.nothing' );
 	}
 
 }
@@ -66,24 +101,24 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 class FooRegistery {
 
 	private $eventDispatcher;
-	private $eventListenerFactory;
+	private $eventListenerCollection;
 
-	public function __construct( EventDispatcher $eventDispatcher, EventListenerFactory $eventListenerFactory ) {
+	public function __construct( EventDispatcher $eventDispatcher, EventListenerCollection $eventListenerCollection ) {
 		$this->eventDispatcher = $eventDispatcher;
-		$this->eventListenerFactory = $eventListenerFactory;
+		$this->eventListenerCollection = $eventListenerCollection;
 	}
 
 	public function register() {
 
-		$callbackEventListener = $this->eventListenerFactory->newGenericCallbackEventListener();
-
-		$callbackEventListener->registerCallback( function( EventContext $eventContext ) {
+		$this->eventListenerCollection->registerCallback( 'do.something', function( EventContext $eventContext ) {
 			$eventContext->get( 'mock' )->doSomething();
 		} );
 
-		$callbackEventListener->setPropagationStopState( true );
+		$this->eventListenerCollection->registerCallback( 'do.something', function( EventContext $eventContext ) {
+			$eventContext->get( 'mock' )->doSomethingElse();
+		} );
 
-		$this->eventDispatcher->addListener( 'do.something', $callbackEventListener );
+		$this->eventDispatcher->addListenerCollection( $this->eventListenerCollection );
 	}
 
 }

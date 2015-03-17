@@ -31,27 +31,31 @@ or to execute `composer require onoi/event-dispatcher:~1.0`.
 ## Usage
 
 ```php
-class CommonListenerRegistery {
+class ListenerRegistery {
 
 	private $eventDispatcher;
-	private $eventListenerFactory;
+	private $eventListenerCollection;
 
-	public function __construct( EventDispatcher $eventDispatcher, EventListenerFactory $eventListenerFactory ) {
+	public function __construct( EventDispatcher $eventDispatcher, EventListenerCollection $eventListenerCollection ) {
 		$this->eventDispatcher = $eventDispatcher;
-		$this->eventListenerFactory = $eventListenerFactory;
+		$this->eventListenerCollection = $eventListenerCollection;
 	}
 
 	public function register() {
 
-		$callbackEventListener = $this->eventListenerFactory->newGenericCallbackEventListener();
-
-		$callbackEventListener->registerCallback( function( $eventContext ) {
+		$this->eventListenerCollection->registerCallback( 'do.something', function() {
 			// Do something
 		} );
 
-		$callbackEventListener->setPropagationStopState( true );
+		$this->eventListenerCollection->registerCallback( 'do.something.else', function( EventContext $eventContext = null ) {
 
-		$this->eventDispatcher->addListener( 'do.something', $callbackEventListener );
+			// Do something else
+			if ( $eventContext !== null ) {
+				$eventContext->get( 'dosomethingelse' );
+			}
+		} );
+
+		$this->eventDispatcher->addListenerCollection( $this->eventListenerCollection );
 	}
 }
 ```
@@ -59,11 +63,7 @@ class CommonListenerRegistery {
 class BarListener implements EventListner {
 
 	public function execute( EventContext $eventContext = null ) {
-
 		// Do something
-		if ( $eventContext !== null ) {
-			$eventContext->get( 'usedByBarIfNotified' );
-		}
 	}
 
 	public function isPropagationStopped() {
@@ -75,15 +75,14 @@ class BarListener implements EventListner {
 $eventDispatcherFactory = new EventDispatcherFactory();
 $eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 
-// Add common listeners
-$commonListenerRegistery = new CommonListenerRegistery(
+$listenerRegistery = new ListenerRegistery(
 	$eventDispatcher,
-	new EventListenerFactory()
+	$eventDispatcherFactory->newGenericEventListenerCollection()
 );
 
-$commonListenerRegistery->register();
+$listenerRegistery->register();
 
-// An an independent listener
+// Ad hoc listener
 $eventDispatcher->addListener( 'notify.bar', new BarListener() );
 
 class Foo {
@@ -94,14 +93,15 @@ class Foo {
 
 	public function doSomething() {
 		$this->eventDispatcher->dispatch( 'do.something' );
+
+		$eventContext = new EventContext();
+		$eventContext->set( 'dosomethingelse', new \stdClass );
+
+		$this->eventDispatcher->dispatch( 'do.something.else', $eventContext );
 	}
 
 	public function doNotifyBar() {
-
-		$eventContext = new EventContext();
-		$eventContext->set( 'usedByBarIfNotified', new \stdClass );
-
-		$this->eventDispatcher->dispatch( 'notify.bar', $eventContext );
+		$this->eventDispatcher->dispatch( 'notify.bar' );
 	}
 }
 
@@ -109,6 +109,8 @@ $foo = new Foo( $eventDispatcher );
 $foo->doSomething();
 $foo->doNotifyBar();
 ```
+
+See also `Onoi\EventDispatcher\Tests\Integration\EventRegistryDispatchTest`.
 
 ## Contribution and support
 
