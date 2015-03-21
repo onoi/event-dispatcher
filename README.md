@@ -17,31 +17,29 @@ PHP 5.3/HHVM 3.3 or later
 ## Installation
 
 The recommended installation method for this library is by either adding
-the dependency to your [composer.json][composer].
+the dependency to your [composer.json][composer] or to execute
+
+ `composer require onoi/event-dispatcher:~0.1`
 
 ```json
 {
 	"require": {
-		"onoi/event-dispatcher": "~1.0"
+		"onoi/event-dispatcher": "~0.1"
 	}
 }
 ```
-or to execute `composer require onoi/event-dispatcher:~1.0`.
-
 ## Usage
 
 ```php
 class ListenerRegistery {
 
-	private $eventDispatcher;
 	private $eventListenerCollection;
 
-	public function __construct( EventDispatcher $eventDispatcher, EventListenerCollection $eventListenerCollection ) {
-		$this->eventDispatcher = $eventDispatcher;
+	public function __construct( EventListenerCollection $eventListenerCollection ) {
 		$this->eventListenerCollection = $eventListenerCollection;
 	}
 
-	public function register() {
+	public function getListenerCollection() {
 
 		$this->eventListenerCollection->registerCallback( 'do.something', function() {
 			// Do something
@@ -55,7 +53,7 @@ class ListenerRegistery {
 			}
 		} );
 
-		$this->eventDispatcher->addListenerCollection( $this->eventListenerCollection );
+		return $this->eventListenerCollection;
 	}
 }
 ```
@@ -73,14 +71,13 @@ class BarListener implements EventListner {
 ```
 ```php
 $eventDispatcherFactory = new EventDispatcherFactory();
-$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 
 $listenerRegistery = new ListenerRegistery(
-	$eventDispatcher,
 	$eventDispatcherFactory->newGenericEventListenerCollection()
 );
 
-$listenerRegistery->register();
+$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
+$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
 
 // Ad hoc listener
 $eventDispatcher->addListener( 'notify.bar', new BarListener() );
@@ -110,8 +107,6 @@ $foo->doSomething();
 $foo->doNotifyBar();
 ```
 
-See also `Onoi\EventDispatcher\Tests\Integration\EventRegistryDispatchTest`.
-
 ## Contribution and support
 
 If you want to contribute work to the project please subscribe to the
@@ -126,7 +121,7 @@ The library provides unit tests that covers the core-functionality normally run 
 
 ### Release notes
 
-* 1.0.0 initial release (2015-03-25)
+* 0.1 initial release (2015-03-21)
 
 ## License
 

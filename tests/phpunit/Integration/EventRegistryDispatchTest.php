@@ -31,14 +31,13 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 			->method( 'doSomethingElse' );
 
 		$eventDispatcherFactory = new EventDispatcherFactory();
-		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 
-		$fooRegistery = new FooRegistery(
-			$eventDispatcher,
+		$listenerRegistery = new ListenerRegistery(
 			$eventDispatcherFactory->newGenericEventListenerCollection()
 		);
 
-		$fooRegistery->register();
+		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
+		$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
 
 		$eventContext = new EventContext();
 		$eventContext->set( 'mock', $mockTester );
@@ -59,14 +58,13 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 			->method( 'doSomethingElse' );
 
 		$eventDispatcherFactory = new EventDispatcherFactory();
-		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 
-		$fooRegistery = new FooRegistery(
-			$eventDispatcher,
+		$listenerRegistery = new ListenerRegistery(
 			$eventDispatcherFactory->newGenericEventListenerCollection()
 		);
 
-		$fooRegistery->register();
+		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
+		$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
 
 		$eventContext = new EventContext();
 		$eventContext->set( 'mock', $mockTester );
@@ -98,17 +96,15 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 
 }
 
-class FooRegistery {
+class ListenerRegistery {
 
-	private $eventDispatcher;
 	private $eventListenerCollection;
 
-	public function __construct( EventDispatcher $eventDispatcher, EventListenerCollection $eventListenerCollection ) {
-		$this->eventDispatcher = $eventDispatcher;
+	public function __construct( EventListenerCollection $eventListenerCollection ) {
 		$this->eventListenerCollection = $eventListenerCollection;
 	}
 
-	public function register() {
+	public function getListenerCollection() {
 
 		$this->eventListenerCollection->registerCallback( 'do.something', function( EventContext $eventContext ) {
 			$eventContext->get( 'mock' )->doSomething();
@@ -118,7 +114,7 @@ class FooRegistery {
 			$eventContext->get( 'mock' )->doSomethingElse();
 		} );
 
-		$this->eventDispatcher->addListenerCollection( $this->eventListenerCollection );
+		return $this->eventListenerCollection;
 	}
 
 }
