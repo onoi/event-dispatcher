@@ -17,9 +17,7 @@ PHP 5.3/HHVM 3.3 or later
 ## Installation
 
 The recommended installation method for this library is by either adding
-the dependency to your [composer.json][composer] or to execute
-
- `composer require onoi/event-dispatcher:~0.1`
+the dependency to your [composer.json][composer] ( use `composer require onoi/event-dispatcher:~0.1`)
 
 ```json
 {
@@ -28,6 +26,7 @@ the dependency to your [composer.json][composer] or to execute
 	}
 }
 ```
+
 ## Usage
 
 ```php
