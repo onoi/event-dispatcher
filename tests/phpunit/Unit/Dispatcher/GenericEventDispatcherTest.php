@@ -37,7 +37,7 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->setExpectedException( 'RuntimeException' );
+		$this->setExpectedException( 'InvalidArgumentException' );
 		$instance->addListener( new \stdClass, $eventListener );
 	}
 
@@ -179,7 +179,7 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 		$instance->dispatch( 'foo', $eventContext );
 	}
 
-	public function testDispatchForListenerCollection() {
+	public function testDispatchFromListenerCollection() {
 
 		$instance = new GenericEventDispatcher();
 

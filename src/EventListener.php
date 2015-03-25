@@ -13,7 +13,7 @@ namespace Onoi\EventDispatcher;
 interface EventListener {
 
 	/**
-	 * Excute a registered listener action
+	 * Execute a registered listener action
 	 *
 	 * @since 1.0
 	 *
@@ -23,7 +23,7 @@ interface EventListener {
 
 	/**
 	 * Whether propagation of events for others with the same identifier
-	 * should continue
+	 * should continue or not
 	 *
 	 * @since 1.0
 	 *

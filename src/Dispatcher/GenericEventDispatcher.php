@@ -6,8 +6,7 @@ use Onoi\EventDispatcher\EventDispatcher;
 use Onoi\EventDispatcher\EventListener;
 use Onoi\EventDispatcher\EventListenerCollection;
 use Onoi\EventDispatcher\EventContext;
-
-use RuntimeException;
+use InvalidArgumentException;
 
 /**
  * Dispatches events to registered listeners
@@ -41,11 +40,13 @@ class GenericEventDispatcher implements EventDispatcher {
 	 * @since 1.0
 	 *
 	 * {@inheritDoc}
+	 *
+	 * @throws InvalidArgumentException
 	 */
 	public function addListener( $event, EventListener $listener ) {
 
 		if ( !is_string( $event ) ) {
-			throw new RuntimeException( "Expected a string " );
+			throw new InvalidArgumentException( "Expected a string" );
 		}
 
 		$event = strtolower( $event );

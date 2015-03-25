@@ -22,7 +22,7 @@ interface EventDispatcher {
 	public function addListenerCollection( EventListenerCollection $listenerCollection );
 
 	/**
-	 * Registers a listener to an event identifier
+	 * Registers a listener to a specific event identifier
 	 *
 	 * @since 1.0
 	 *
@@ -32,7 +32,7 @@ interface EventDispatcher {
 	public function addListener( $event, EventListener $listener );
 
 	/**
-	 * Remove all (or a specific) listener that matches the event identifier
+	 * Removes all or a specific listener that matches the event identifier
 	 *
 	 * @since 1.0
 	 *
@@ -42,7 +42,7 @@ interface EventDispatcher {
 	public function removeListener( $event, EventListener $listener = null );
 
 	/**
-	 * Whether an event identifier has registered listeners
+	 * Whether an event identifier has been registered listeners or not
 	 *
 	 * @since 1.0
 	 *

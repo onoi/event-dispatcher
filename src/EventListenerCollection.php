@@ -3,8 +3,6 @@
 namespace Onoi\EventDispatcher;
 
 /**
- * Interface for objects that can be listen to
- *
  * @license GNU GPL v2+
  * @since 1.0
  *
@@ -13,7 +11,7 @@ namespace Onoi\EventDispatcher;
 interface EventListenerCollection {
 
 	/**
-	 * Returns a collection of invoked EventListener
+	 * Returns a collection of registered EventListeners
 	 *
 	 * @since 1.0
 	 *

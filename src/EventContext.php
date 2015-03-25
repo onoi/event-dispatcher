@@ -5,7 +5,8 @@ namespace Onoi\EventDispatcher;
 use InvalidArgumentException;
 
 /**
- * Generic options to be attachable during the execution of a listener
+ * Generic context to can be attached during the dispatch and can be accessed
+ * by a listener
  *
  * @license GNU GPL v2+
  * @since 1.0
@@ -17,9 +18,18 @@ class EventContext {
 	/**
 	 * @var array
 	 */
-	private $options = array(
-		'propagationstop' => false
-	);
+	private $container = array();
+
+	/**
+	 * @since 1.0
+	 *
+	 * @param string $key
+	 *
+	 * @return boolean
+	 */
+	public function has( $key ) {
+		return isset( $this->container[strtolower( $key )] );
+	}
 
 	/**
 	 * @since 1.0
@@ -28,7 +38,7 @@ class EventContext {
 	 * @param mixed $value
 	 */
 	public function set( $key, $value ) {
-		$this->options[strtolower( $key )] = $value;
+		$this->container[strtolower( $key )] = $value;
 	}
 
 	/**
@@ -41,13 +51,11 @@ class EventContext {
 	 */
 	public function get( $key ) {
 
-		$key = strtolower( $key );
-
-		if ( isset( $this->options[$key] ) ) {
-			return $this->options[$key];
+		if ( $this->has( $key ) ) {
+			return $this->container[strtolower( $key )];
 		}
 
-		throw new InvalidArgumentException(  "{$key} is unknown" );
+		throw new InvalidArgumentException( "{$key} is unknown" );
 	}
 
 	/**
@@ -56,7 +64,7 @@ class EventContext {
 	 * @return boolean
 	 */
 	public function isPropagationStopped() {
-		return $this->get( 'propagationstop' );
+		return $this->has( 'propagationstop' ) ? $this->get( 'propagationstop' ) : false;
 	}
 
 }

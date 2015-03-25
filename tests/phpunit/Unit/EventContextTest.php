@@ -24,10 +24,19 @@ class EventContextTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testSetGet() {
+	public function testRountrip() {
 
 		$instance = new EventContext();
+
+		$this->assertFalse(
+			$instance->has( 'FOO' )
+		);
+
 		$instance->set( 'foo', 'bar' );
+
+		$this->assertTrue(
+			$instance->has( 'FOO' )
+		);
 
 		$this->assertEquals(
 			'bar',
@@ -57,7 +66,7 @@ class EventContextTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testUnknownThrowsException() {
+	public function testUnknownKeyThrowsException() {
 
 		$instance = new EventContext();
 

@@ -17,18 +17,31 @@ PHP 5.3/HHVM 3.3 or later
 ## Installation
 
 The recommended installation method for this library is by either adding
-the dependency to your [composer.json][composer] ( use `composer require onoi/event-dispatcher:~0.1`)
+the dependency to your [composer.json][composer]
 
 ```json
 {
 	"require": {
-		"onoi/event-dispatcher": "~0.1"
+		"onoi/event-dispatcher": "~1.0"
 	}
 }
 ```
+or to execute `composer require onoi/event-dispatcher:~1.0`.
 
 ## Usage
 
+```php
+class BarListener implements EventListner {
+
+	public function execute( EventContext $eventContext = null ) {
+		// Do something
+	}
+
+	public function isPropagationStopped() {
+		return false;
+	}
+}
+```
 ```php
 class ListenerRegistery {
 
@@ -52,19 +65,9 @@ class ListenerRegistery {
 			}
 		} );
 
+		$this->eventListenerCollection->registerListener( 'notify.bar', new BarListener() );
+
 		return $this->eventListenerCollection;
-	}
-}
-```
-```php
-class BarListener implements EventListner {
-
-	public function execute( EventContext $eventContext = null ) {
-		// Do something
-	}
-
-	public function isPropagationStopped() {
-		return false;
 	}
 }
 ```
@@ -76,10 +79,10 @@ $listenerRegistery = new ListenerRegistery(
 );
 
 $eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
-$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
 
-// Ad hoc listener
-$eventDispatcher->addListener( 'notify.bar', new BarListener() );
+$eventDispatcher->addListenerCollection(
+	$listenerRegistery->getListenerCollection()
+);
 
 class Foo {
 
@@ -120,7 +123,7 @@ The library provides unit tests that covers the core-functionality normally run 
 
 ### Release notes
 
-* 0.1 initial release (2015-03-21)
+* 1.0.0 initial release (2015-03-21)
 
 ## License
 
