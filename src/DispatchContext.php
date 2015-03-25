@@ -5,15 +5,15 @@ namespace Onoi\EventDispatcher;
 use InvalidArgumentException;
 
 /**
- * Generic context to can be attached during the dispatch and can be accessed
- * by a listener
+ * Generic context to can be attached during the dispatch process and is
+ * accessibly to each activated listener
  *
  * @license GNU GPL v2+
  * @since 1.0
  *
  * @author mwjames
  */
-class EventContext {
+class DispatchContext {
 
 	/**
 	 * @var array

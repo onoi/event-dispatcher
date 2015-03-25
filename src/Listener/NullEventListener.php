@@ -3,7 +3,7 @@
 namespace Onoi\EventDispatcher\Listener;
 
 use Onoi\EventDispatcher\EventListener;
-use Onoi\EventDispatcher\EventContext;
+use Onoi\EventDispatcher\DispatchContext;
 
 /**
  * @license GNU GPL v2+
@@ -18,7 +18,7 @@ class NullEventListener implements EventListener {
 	 *
 	 * {@inheritDoc}
 	 */
-	public function execute( EventContext $eventContext = null ) {}
+	public function execute( DispatchContext $dispatchContext = null ) {}
 
 	/**
 	 * @since 1.0

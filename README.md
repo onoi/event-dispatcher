@@ -33,7 +33,7 @@ or to execute `composer require onoi/event-dispatcher:~1.0`.
 ```php
 class BarListener implements EventListner {
 
-	public function execute( EventContext $eventContext = null ) {
+	public function execute( DispatchContext $dispatchContext = null ) {
 		// Do something
 	}
 
@@ -57,11 +57,11 @@ class ListenerRegistery {
 			// Do something
 		} );
 
-		$this->eventListenerCollection->registerCallback( 'do.something.else', function( EventContext $eventContext = null ) {
+		$this->eventListenerCollection->registerCallback( 'do.something.else', function( DispatchContext $dispatchContext = null ) {
 
 			// Do something else
-			if ( $eventContext !== null ) {
-				$eventContext->get( 'dosomethingelse' );
+			if ( $dispatchContext !== null ) {
+				$dispatchContext->get( 'dosomethingelse' );
 			}
 		} );
 
@@ -93,10 +93,10 @@ class Foo {
 	public function doSomething() {
 		$this->eventDispatcher->dispatch( 'do.something' );
 
-		$eventContext = new EventContext();
-		$eventContext->set( 'dosomethingelse', new \stdClass );
+		$dispatchContext = new DispatchContext();
+		$dispatchContext->set( 'dosomethingelse', new \stdClass );
 
-		$this->eventDispatcher->dispatch( 'do.something.else', $eventContext );
+		$this->eventDispatcher->dispatch( 'do.something.else', $dispatchContext );
 	}
 
 	public function doNotifyBar() {

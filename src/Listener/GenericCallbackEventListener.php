@@ -3,8 +3,7 @@
 namespace Onoi\EventDispatcher\Listener;
 
 use Onoi\EventDispatcher\EventListener;
-use Onoi\EventDispatcher\EventContext;
-
+use Onoi\EventDispatcher\DispatchContext;
 use RuntimeException;
 
 /**
@@ -56,9 +55,9 @@ class GenericCallbackEventListener implements EventListener {
 	 *
 	 * {@inheritDoc}
 	 */
-	public function execute( EventContext $eventContext = null ) {
+	public function execute( DispatchContext $dispatchContext = null ) {
 		foreach ( $this->callbacks as $callback ) {
-			call_user_func_array( $callback, array( $eventContext ) );
+			call_user_func_array( $callback, array( $dispatchContext ) );
 		}
 	}
 

@@ -17,9 +17,9 @@ interface EventListener {
 	 *
 	 * @since 1.0
 	 *
-	 * @param EventContext|null $eventContext
+	 * @param DispatchContext|null $dispatchContext
 	 */
-	public function execute( EventContext $eventContext = null );
+	public function execute( DispatchContext $dispatchContext = null );
 
 	/**
 	 * Whether propagation of events for others with the same identifier

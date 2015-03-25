@@ -154,11 +154,11 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 
 		$instance = new GenericEventDispatcher();
 
-		$eventContext = $this->getMockBuilder( '\Onoi\EventDispatcher\EventContext' )
+		$dispatchContext = $this->getMockBuilder( '\Onoi\EventDispatcher\DispatchContext' )
 			->disableOriginalConstructor()
 			->getMock();
 
-		$eventContext->expects( $this->once() )
+		$dispatchContext->expects( $this->once() )
 			->method( 'isPropagationStopped' )
 			->will( $this->returnValue( true ) );
 
@@ -168,7 +168,7 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 
 		$eventListener->expects( $this->once() )
 			->method( 'execute' )
-			->with( $this->identicalTo( $eventContext ) );
+			->with( $this->identicalTo( $dispatchContext ) );
 
 		$eventListener->expects( $this->once() )
 			->method( 'isPropagationStopped' )
@@ -176,14 +176,14 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 
 		$instance->addListener( 'foo', $eventListener );
 
-		$instance->dispatch( 'foo', $eventContext );
+		$instance->dispatch( 'foo', $dispatchContext );
 	}
 
 	public function testDispatchFromListenerCollection() {
 
 		$instance = new GenericEventDispatcher();
 
-		$eventContext = $this->getMockBuilder( '\Onoi\EventDispatcher\EventContext' )
+		$dispatchContext = $this->getMockBuilder( '\Onoi\EventDispatcher\DispatchContext' )
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -193,7 +193,7 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 
 		$eventListener->expects( $this->once() )
 			->method( 'execute' )
-			->with( $this->identicalTo( $eventContext ) );
+			->with( $this->identicalTo( $dispatchContext ) );
 
 		$eventListenerCollection = $this->getMockBuilder( '\Onoi\EventDispatcher\EventListenerCollection' )
 			->disableOriginalConstructor()
@@ -216,7 +216,7 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 			$instance->hasEvent( 'bAr' )
 		);
 
-		$instance->dispatch( 'foo', $eventContext );
+		$instance->dispatch( 'foo', $dispatchContext );
 	}
 
 }

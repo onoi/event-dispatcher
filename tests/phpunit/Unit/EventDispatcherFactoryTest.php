@@ -33,13 +33,13 @@ class EventDispatcherFactoryTest extends \PHPUnit_Framework_TestCase {
 		EventDispatcherFactory::clear();
 	}
 
-	public function testCanConstructEventContext() {
+	public function testCanConstructDispatchContext() {
 
 		$instance = new EventDispatcherFactory();
 
 		$this->assertInstanceOf(
-			'\Onoi\EventDispatcher\EventContext',
-			$instance->newEventContext()
+			'\Onoi\EventDispatcher\DispatchContext',
+			$instance->newDispatchContext()
 		);
 	}
 

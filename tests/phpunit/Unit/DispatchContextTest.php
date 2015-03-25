@@ -2,10 +2,10 @@
 
 namespace Onoi\EventDispatcher\Tests;
 
-use Onoi\EventDispatcher\EventContext;
+use Onoi\EventDispatcher\DispatchContext;
 
 /**
- * @covers \Onoi\EventDispatcher\EventContext
+ * @covers \Onoi\EventDispatcher\DispatchContext
  *
  * @group onoi-event-dispatcher
  *
@@ -14,19 +14,19 @@ use Onoi\EventDispatcher\EventContext;
  *
  * @author mwjames
  */
-class EventContextTest extends \PHPUnit_Framework_TestCase {
+class DispatchContextTest extends \PHPUnit_Framework_TestCase {
 
 	public function testCanConstruct() {
 
 		$this->assertInstanceOf(
-			'\Onoi\EventDispatcher\EventContext',
-			new EventContext()
+			'\Onoi\EventDispatcher\DispatchContext',
+			new DispatchContext()
 		);
 	}
 
 	public function testRountrip() {
 
-		$instance = new EventContext();
+		$instance = new DispatchContext();
 
 		$this->assertFalse(
 			$instance->has( 'FOO' )
@@ -53,7 +53,7 @@ class EventContextTest extends \PHPUnit_Framework_TestCase {
 
 	public function testToAlterPropagationState() {
 
-		$instance = new EventContext();
+		$instance = new DispatchContext();
 
 		$this->assertFalse(
 			$instance->isPropagationStopped()
@@ -68,7 +68,7 @@ class EventContextTest extends \PHPUnit_Framework_TestCase {
 
 	public function testUnknownKeyThrowsException() {
 
-		$instance = new EventContext();
+		$instance = new DispatchContext();
 
 		$this->setExpectedException( 'InvalidArgumentException' );
 		$instance->get( 'FOO' );

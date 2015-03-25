@@ -58,8 +58,8 @@ interface EventDispatcher {
 	 * @since 1.0
 	 *
 	 * @param string $event
-	 * @param EventContext|null $eventContext
+	 * @param DispatchContext|null $dispatchContext
 	 */
-	public function dispatch( $event, EventContext $eventContext = null );
+	public function dispatch( $event, DispatchContext $dispatchContext = null );
 
 }

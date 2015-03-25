@@ -4,7 +4,7 @@ namespace Onoi\EventDispatcher\Tests\Integration;
 
 use Onoi\EventDispatcher\EventDispatcherFactory;
 use Onoi\EventDispatcher\EventDispatcher;
-use Onoi\EventDispatcher\EventContext;
+use Onoi\EventDispatcher\DispatchContext;
 use Onoi\EventDispatcher\EventListener;
 use Onoi\EventDispatcher\EventListenerCollection;
 
@@ -39,10 +39,10 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 		$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
 
-		$eventContext = new EventContext();
-		$eventContext->set( 'mock', $mockTester );
+		$dispatchContext = new DispatchContext();
+		$dispatchContext->set( 'mock', $mockTester );
 
-		$eventDispatcher->dispatch( 'do.something', $eventContext );
+		$eventDispatcher->dispatch( 'do.something', $dispatchContext );
 	}
 
 	public function testDispatchSomeEventsToCollectionOfListenersWithPropagationStop() {
@@ -66,11 +66,11 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 		$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
 
-		$eventContext = new EventContext();
-		$eventContext->set( 'mock', $mockTester );
-		$eventContext->set( 'propagationstop', true );
+		$dispatchContext = new DispatchContext();
+		$dispatchContext->set( 'mock', $mockTester );
+		$dispatchContext->set( 'propagationstop', true );
 
-		$eventDispatcher->dispatch( 'do.something', $eventContext );
+		$eventDispatcher->dispatch( 'do.something', $dispatchContext );
 	}
 
 	public function testDispatchSomeEventsToAdHocListener() {
@@ -87,10 +87,10 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 
 		$eventDispatcher->addListener( 'do.something', new BarListener() );
 
-		$eventContext = new EventContext();
-		$eventContext->set( 'mock', $mockTester );
+		$dispatchContext = new DispatchContext();
+		$dispatchContext->set( 'mock', $mockTester );
 
-		$eventDispatcher->dispatch( 'do.something', $eventContext );
+		$eventDispatcher->dispatch( 'do.something', $dispatchContext );
 		$eventDispatcher->dispatch( 'do.nothing' );
 	}
 
@@ -106,12 +106,12 @@ class ListenerRegistery {
 
 	public function getListenerCollection() {
 
-		$this->eventListenerCollection->registerCallback( 'do.something', function( EventContext $eventContext ) {
-			$eventContext->get( 'mock' )->doSomething();
+		$this->eventListenerCollection->registerCallback( 'do.something', function( DispatchContext $dispatchContext ) {
+			$dispatchContext->get( 'mock' )->doSomething();
 		} );
 
-		$this->eventListenerCollection->registerCallback( 'do.something', function( EventContext $eventContext ) {
-			$eventContext->get( 'mock' )->doSomethingElse();
+		$this->eventListenerCollection->registerCallback( 'do.something', function( DispatchContext $dispatchContext ) {
+			$dispatchContext->get( 'mock' )->doSomethingElse();
 		} );
 
 		return $this->eventListenerCollection;
@@ -121,8 +121,8 @@ class ListenerRegistery {
 
 class BarListener implements EventListener {
 
-	public function execute( EventContext $eventContext = null ) {
-		$eventContext->get( 'mock' )->doSomething();
+	public function execute( DispatchContext $dispatchContext = null ) {
+		$dispatchContext->get( 'mock' )->doSomething();
 	}
 
 	public function isPropagationStopped() {

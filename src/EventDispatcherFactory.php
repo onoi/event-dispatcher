@@ -53,10 +53,10 @@ class EventDispatcherFactory {
 	/**
 	 * @since 1.0
 	 *
-	 * @return EventContext
+	 * @return DispatchContext
 	 */
-	public function newEventContext() {
-		return new EventContext();
+	public function newDispatchContext() {
+		return new DispatchContext();
 	}
 
 	/**

@@ -5,7 +5,7 @@ namespace Onoi\EventDispatcher\Dispatcher;
 use Onoi\EventDispatcher\EventDispatcher;
 use Onoi\EventDispatcher\EventListener;
 use Onoi\EventDispatcher\EventListenerCollection;
-use Onoi\EventDispatcher\EventContext;
+use Onoi\EventDispatcher\DispatchContext;
 use InvalidArgumentException;
 
 /**
@@ -98,7 +98,7 @@ class GenericEventDispatcher implements EventDispatcher {
 	 *
 	 * {@inheritDoc}
 	 */
-	public function dispatch( $event, EventContext $eventContext = null ) {
+	public function dispatch( $event, DispatchContext $dispatchContext = null ) {
 
 		$event = strtolower( $event );
 
@@ -108,9 +108,9 @@ class GenericEventDispatcher implements EventDispatcher {
 
 		foreach ( $this->dispatchableListeners[$event] as $listener ) {
 
-			$listener->execute( $eventContext );
+			$listener->execute( $dispatchContext );
 
-			if ( $listener->isPropagationStopped() || ( $eventContext !== null && $eventContext->isPropagationStopped() ) ) {
+			if ( $listener->isPropagationStopped() || ( $dispatchContext !== null && $dispatchContext->isPropagationStopped() ) ) {
 				break;
 			}
 		}
