@@ -24,7 +24,7 @@ class DispatchContextTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testRountrip() {
+	public function testRoundtrip() {
 
 		$instance = new DispatchContext();
 
@@ -51,7 +51,7 @@ class DispatchContextTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testToAlterPropagationState() {
+	public function testChangePropagationState() {
 
 		$instance = new DispatchContext();
 

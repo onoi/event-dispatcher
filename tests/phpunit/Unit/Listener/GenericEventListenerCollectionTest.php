@@ -49,7 +49,7 @@ class GenericEventListenerCollectionTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testRegisterListenerForInvalidEventIdentifierThrowsException() {
+	public function testTryRegisterListenerUsingInvalidEventIdentifierThrowsException() {
 
 		$eventListener = $this->getMockBuilder( '\Onoi\EventDispatcher\EventListener' )
 			->disableOriginalConstructor()
@@ -78,7 +78,7 @@ class GenericEventListenerCollectionTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testRegisterCallbackForInvalidEventIdentifierThrowsException() {
+	public function testTryRegisterCallbackUsingInvalidEventIdentifierThrowsException() {
 
 		$callback = function() { return 'doSomething'; };
 
@@ -88,7 +88,7 @@ class GenericEventListenerCollectionTest extends \PHPUnit_Framework_TestCase {
 		$instance->registerCallback( new \stdClass, $callback );
 	}
 
-	public function testRegisterCallbackForInvalidCallbackThrowsException() {
+	public function testTryRegisterCallbackUsingInvalidCallbackThrowsException() {
 
 		$eventListener = $this->getMockBuilder( '\Onoi\EventDispatcher\EventListener' )
 			->disableOriginalConstructor()

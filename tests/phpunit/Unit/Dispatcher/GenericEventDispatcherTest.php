@@ -29,7 +29,7 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testInvalidEventIdentifierThrowsException() {
+	public function testTryAddingListenerUsingInvalidEventIdentifierThrowsException() {
 
 		$instance = new GenericEventDispatcher();
 
@@ -56,7 +56,7 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testRemoveListenerForSpecificListener() {
+	public function testRemoveSpecificListener() {
 
 		$instance = new GenericEventDispatcher();
 
@@ -146,7 +146,6 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 			->method( 'isPropagationStopped' );
 
 		$instance->addListener( 'foo', $eventListener );
-
 		$instance->dispatch( 'foo' );
 	}
 
@@ -217,6 +216,22 @@ class GenericEventDispatcherTest extends \PHPUnit_Framework_TestCase {
 		);
 
 		$instance->dispatch( 'foo', $dispatchContext );
+	}
+
+	public function testTryRegisterNonTraversableCollectionThrowsException() {
+
+		$instance = new GenericEventDispatcher();
+
+		$eventListenerCollection = $this->getMockBuilder( '\Onoi\EventDispatcher\EventListenerCollection' )
+			->disableOriginalConstructor()
+			->getMock();
+
+		$eventListenerCollection->expects( $this->once() )
+			->method( 'getCollection' )
+			->will( $this->returnValue( false ) );
+
+		$this->setExpectedException( 'RuntimeException' );
+		$instance->addListenerCollection( $eventListenerCollection );
 	}
 
 }

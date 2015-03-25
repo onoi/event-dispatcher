@@ -31,7 +31,7 @@ or to execute `composer require onoi/event-dispatcher:~1.0`.
 ## Usage
 
 ```php
-class BarListener implements EventListner {
+class BarListener implements EventListener {
 
 	public function execute( DispatchContext $dispatchContext = null ) {
 		// Do something
@@ -43,7 +43,7 @@ class BarListener implements EventListner {
 }
 ```
 ```php
-class ListenerRegistery {
+class ListenerCollectionRegistery implements EventListenerCollection {
 
 	private $eventListenerCollection;
 
@@ -51,18 +51,14 @@ class ListenerRegistery {
 		$this->eventListenerCollection = $eventListenerCollection;
 	}
 
-	public function getListenerCollection() {
+	public function getCollection() {
+		return $this->addToListenerCollection()->getCollection();
+	}
+
+	private function addToListenerCollection() {
 
 		$this->eventListenerCollection->registerCallback( 'do.something', function() {
 			// Do something
-		} );
-
-		$this->eventListenerCollection->registerCallback( 'do.something.else', function( DispatchContext $dispatchContext = null ) {
-
-			// Do something else
-			if ( $dispatchContext !== null ) {
-				$dispatchContext->get( 'dosomethingelse' );
-			}
 		} );
 
 		$this->eventListenerCollection->registerListener( 'notify.bar', new BarListener() );
@@ -74,15 +70,12 @@ class ListenerRegistery {
 ```php
 $eventDispatcherFactory = new EventDispatcherFactory();
 
-$listenerRegistery = new ListenerRegistery(
+$listenerCollectionRegistery = new ListenerCollectionRegistery(
 	$eventDispatcherFactory->newGenericEventListenerCollection()
 );
 
 $eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
-
-$eventDispatcher->addListenerCollection(
-	$listenerRegistery->getListenerCollection()
-);
+$eventDispatcher->addListenerCollection( $listenerCollectionRegistery );
 
 class Foo {
 
@@ -96,17 +89,12 @@ class Foo {
 		$dispatchContext = new DispatchContext();
 		$dispatchContext->set( 'dosomethingelse', new \stdClass );
 
-		$this->eventDispatcher->dispatch( 'do.something.else', $dispatchContext );
-	}
-
-	public function doNotifyBar() {
-		$this->eventDispatcher->dispatch( 'notify.bar' );
+		$this->eventDispatcher->dispatch( 'notify.bar', $dispatchContext );
 	}
 }
 
-$foo = new Foo( $eventDispatcher );
-$foo->doSomething();
-$foo->doNotifyBar();
+$instance = new Foo( $eventDispatcher );
+$instance->doSomething();
 ```
 
 ## Contribution and support
@@ -123,7 +111,7 @@ The library provides unit tests that covers the core-functionality normally run 
 
 ### Release notes
 
-* 1.0.0 initial release (2015-03-21)
+* 1.0.0 initial release (2015-03-25)
 
 ## License
 

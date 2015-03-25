@@ -22,8 +22,10 @@ interface EventListener {
 	public function execute( DispatchContext $dispatchContext = null );
 
 	/**
-	 * Whether propagation of events for others with the same identifier
-	 * should continue or not
+	 * Whether propagation of the event to be stopped after the execution.
+	 *
+	 * It influences the dispatch persistence state for succeeding listeners
+	 * to continue with the execution process for the same event.
 	 *
 	 * @since 1.0
 	 *

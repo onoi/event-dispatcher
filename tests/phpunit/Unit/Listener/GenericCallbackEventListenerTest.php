@@ -29,7 +29,7 @@ class GenericCallbackEventListenerTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testNonCallbackThrowsException() {
+	public function testTryRegisterNonCallbackThrowsException() {
 
 		$instance = new GenericCallbackEventListener();
 

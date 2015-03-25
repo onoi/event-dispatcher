@@ -47,6 +47,8 @@ class GenericCallbackEventListener implements EventListener {
 			throw new RuntimeException( "Invoked object is not a valid callback or Closure" );
 		}
 
+		// While this does not build a real dependency chain, it allows for atomic
+		// event handling by following FIFO
 		$this->callbacks[] = $callback;
 	}
 

@@ -53,7 +53,7 @@ interface EventDispatcher {
 	public function hasEvent( $event );
 
 	/**
-	 * Notifies all listeners register to an event identifier
+	 * Notifies all listeners registered to an event identifier
 	 *
 	 * @since 1.0
 	 *

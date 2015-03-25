@@ -7,6 +7,8 @@ use Onoi\EventDispatcher\EventListener;
 use Onoi\EventDispatcher\EventListenerCollection;
 use Onoi\EventDispatcher\DispatchContext;
 use InvalidArgumentException;
+use RuntimeException;
+use Traversable;
 
 /**
  * Dispatches events to registered listeners
@@ -27,9 +29,18 @@ class GenericEventDispatcher implements EventDispatcher {
 	 * @since 1.0
 	 *
 	 * {@inheritDoc}
+	 *
+	 * @throws RuntimeException
 	 */
 	public function addListenerCollection( EventListenerCollection $listenerCollection ) {
-		foreach ( $listenerCollection->getCollection() as $event => $listeners ) {
+
+		$collection = $listenerCollection->getCollection();
+
+		 if( !is_array( $collection ) && !$collection instanceof Traversable ) {
+		 	throw new RuntimeException( "Expected a traversable object" );
+		 }
+
+		foreach ( $collection as $event => $listeners ) {
 			foreach ( $listeners as $listener ) {
 				$this->addListener( $event, $listener );
 			}

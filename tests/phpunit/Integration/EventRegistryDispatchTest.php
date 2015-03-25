@@ -18,7 +18,7 @@ use Onoi\EventDispatcher\EventListenerCollection;
  */
 class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 
-	public function testDispatchSomeEventsToCollectionOfListenersWithoutPropagationStop() {
+	public function testDispatchSomeEventsFromCollectionOfListenersWithoutPropagationStop() {
 
 		$mockTester = $this->getMockBuilder( '\stdClass' )
 			->setMethods( array( 'doSomething', 'doSomethingElse' ) )
@@ -32,12 +32,12 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 
 		$eventDispatcherFactory = new EventDispatcherFactory();
 
-		$listenerRegistery = new ListenerRegistery(
+		$listenerCollectionRegistery = new ListenerCollectionRegistery(
 			$eventDispatcherFactory->newGenericEventListenerCollection()
 		);
 
 		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
-		$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
+		$eventDispatcher->addListenerCollection( $listenerCollectionRegistery );
 
 		$dispatchContext = new DispatchContext();
 		$dispatchContext->set( 'mock', $mockTester );
@@ -45,7 +45,7 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 		$eventDispatcher->dispatch( 'do.something', $dispatchContext );
 	}
 
-	public function testDispatchSomeEventsToCollectionOfListenersWithPropagationStop() {
+	public function testDispatchSomeEventsFromCollectionOfListenersWithPropagationStop() {
 
 		$mockTester = $this->getMockBuilder( '\stdClass' )
 			->setMethods( array( 'doSomething', 'doSomethingElse' ) )
@@ -54,17 +54,17 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 		$mockTester->expects( $this->once() )
 			->method( 'doSomething' );
 
-		$mockTester->expects( $this->never() )
+		$mockTester->expects( $this->never() ) // PropagationStop
 			->method( 'doSomethingElse' );
 
 		$eventDispatcherFactory = new EventDispatcherFactory();
 
-		$listenerRegistery = new ListenerRegistery(
+		$listenerCollectionRegistery = new ListenerCollectionRegistery(
 			$eventDispatcherFactory->newGenericEventListenerCollection()
 		);
 
 		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
-		$eventDispatcher->addListenerCollection( $listenerRegistery->getListenerCollection() );
+		$eventDispatcher->addListenerCollection( $listenerCollectionRegistery );
 
 		$dispatchContext = new DispatchContext();
 		$dispatchContext->set( 'mock', $mockTester );
@@ -73,7 +73,7 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 		$eventDispatcher->dispatch( 'do.something', $dispatchContext );
 	}
 
-	public function testDispatchSomeEventsToAdHocListener() {
+	public function testDispatchSomeEventsThroughAdHocListener() {
 
 		$mockTester = $this->getMockBuilder( '\stdClass' )
 			->setMethods( array( 'doSomething' ) )
@@ -85,18 +85,21 @@ class EventRegistryDispatchTest extends \PHPUnit_Framework_TestCase {
 		$eventDispatcherFactory = new EventDispatcherFactory();
 		$eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
 
-		$eventDispatcher->addListener( 'do.something', new BarListener() );
+		$eventDispatcher->addListener( 'notify.bar', new BarListener() );
 
 		$dispatchContext = new DispatchContext();
 		$dispatchContext->set( 'mock', $mockTester );
 
-		$eventDispatcher->dispatch( 'do.something', $dispatchContext );
-		$eventDispatcher->dispatch( 'do.nothing' );
+		$eventDispatcher->dispatch( 'notify.bar', $dispatchContext );
+		$eventDispatcher->dispatch( 'try.notify.empty.listener' );
 	}
 
 }
 
-class ListenerRegistery {
+/**
+ * Example required for the test
+ */
+class ListenerCollectionRegistery implements EventListenerCollection {
 
 	private $eventListenerCollection;
 
@@ -104,7 +107,11 @@ class ListenerRegistery {
 		$this->eventListenerCollection = $eventListenerCollection;
 	}
 
-	public function getListenerCollection() {
+	public function getCollection() {
+		return $this->addToListenerCollection()->getCollection();
+	}
+
+	private function addToListenerCollection() {
 
 		$this->eventListenerCollection->registerCallback( 'do.something', function( DispatchContext $dispatchContext ) {
 			$dispatchContext->get( 'mock' )->doSomething();

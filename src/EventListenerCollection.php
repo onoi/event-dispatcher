@@ -15,7 +15,7 @@ interface EventListenerCollection {
 	 *
 	 * @since 1.0
 	 *
-	 * @param array
+	 * @return EventListener[]
 	 */
 	public function getCollection();
 
