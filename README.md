@@ -16,7 +16,7 @@ PHP 5.3/HHVM 3.3 or later
 ## Installation
 
 The recommended installation method for this library is by either adding
-the dependency to your [composer.json][composer]
+the dependency to your [composer.json][composer].
 
 ```json
 {
@@ -25,7 +25,6 @@ the dependency to your [composer.json][composer]
 	}
 }
 ```
-or to execute `composer require onoi/event-dispatcher:~1.0`.
 
 ## Usage
 
@@ -42,7 +41,7 @@ class BarListener implements EventListener {
 }
 ```
 ```php
-class ListenerCollectionRegistery implements EventListenerCollection {
+class ListenerCollectionRegistry implements EventListenerCollection {
 
 	private $eventListenerCollection;
 
@@ -69,12 +68,12 @@ class ListenerCollectionRegistery implements EventListenerCollection {
 ```php
 $eventDispatcherFactory = new EventDispatcherFactory();
 
-$listenerCollectionRegistery = new ListenerCollectionRegistery(
+$listenerCollectionRegistry = new ListenerCollectionRegistry(
 	$eventDispatcherFactory->newGenericEventListenerCollection()
 );
 
 $eventDispatcher = $eventDispatcherFactory->newGenericEventDispatcher();
-$eventDispatcher->addListenerCollection( $listenerCollectionRegistery );
+$eventDispatcher->addListenerCollection( $listenerCollectionRegistry );
 
 class Foo {
 
