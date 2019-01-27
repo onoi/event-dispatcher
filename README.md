@@ -117,9 +117,9 @@ The library provides unit tests that covers the core-functionality normally run 
 ### Release notes
 
 - 1.1.0 (2019-01-27)
- - Allows `EventDispatcher::dispatch` to take an array as context object
- - Adds the `EventNotDispatchableException` and `Subscriber` interface
- - Adds the `EventDispatcherAwareTrait` class
+  - Allowed `EventDispatcher::dispatch` to take an array as context object
+  - Added the `EventNotDispatchableException` and `Subscriber` interface
+  - Added the `EventDispatcherAwareTrait` class
 
 * 1.0.0 initial release (2015-03-25)
 
