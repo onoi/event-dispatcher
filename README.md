@@ -5,7 +5,6 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/onoi/event-dispatcher/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/onoi/event-dispatcher/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/onoi/event-dispatcher/version.png)](https://packagist.org/packages/onoi/event-dispatcher)
 [![Packagist download count](https://poser.pugx.org/onoi/event-dispatcher/d/total.png)](https://packagist.org/packages/onoi/event-dispatcher)
-[![Dependency Status](https://www.versioneye.com/php/onoi:event-dispatcher/badge.png)](https://www.versioneye.com/php/onoi:event-dispatcher)
 
 A minimalistic event dispatcher (observer) interface that was part of the [Semantic MediaWiki][smw] code base and
 is now being deployed as independent library.
@@ -117,7 +116,7 @@ The library provides unit tests that covers the core-functionality normally run 
 
 ### Release notes
 
-- 1.1.0 (2019-01-26)
+- 1.1.0 (2019-01-27)
  - Allows `EventDispatcher::dispatch` to take an array as context object
  - Adds the `EventNotDispatchableException` and `Subscriber` interface
  - Adds the `EventDispatcherAwareTrait` class
