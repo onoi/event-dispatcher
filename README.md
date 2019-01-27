@@ -79,21 +79,27 @@ $eventDispatcher->addListenerCollection( $listenerCollectionRegistery );
 
 class Foo {
 
-	public function __construct( EventDispatcher $eventDispatcher ) {
-		$this->eventDispatcher = $eventDispatcher;
-	}
+	use EventDispatcherAwareTrait;
 
 	public function doSomething() {
+
+		// No context
 		$this->eventDispatcher->dispatch( 'do.something' );
 
 		$dispatchContext = new DispatchContext();
 		$dispatchContext->set( 'dosomethingelse', new \stdClass );
 
+		// Using `DispatchContext`
 		$this->eventDispatcher->dispatch( 'notify.bar', $dispatchContext );
+
+		// Using an array as context which is later converted into
+		// a `DispatchContext`
+		$this->eventDispatcher->dispatch( 'notify.foo', [ 'Bar' => 123 ] );
 	}
 }
 
-$instance = new Foo( $eventDispatcher );
+$instance = new Foo();
+$instance->setEventDispatcher( $eventDispatcher );
 $instance->doSomething();
 ```
 
@@ -110,6 +116,11 @@ developers mailing list and have a look at the [contribution guidelinee](/CONTRI
 The library provides unit tests that covers the core-functionality normally run by the [continues integration platform][travis]. Tests can also be executed manually using the PHPUnit configuration file found in the root directory.
 
 ### Release notes
+
+- 1.1.0 (2019-01-26)
+ - Allows `EventDispatcher::dispatch` to take an array as context object
+ - Adds the `EventNotDispatchableException` and `Subscriber` interface
+ - Adds the `EventDispatcherAwareTrait` class
 
 * 1.0.0 initial release (2015-03-25)
 
